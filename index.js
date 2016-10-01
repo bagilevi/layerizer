@@ -53,23 +53,23 @@ function findLayersInAcyclicGraph(graph) {
   var nodeLevel = {}; // nodeId => level(int)/undefined
   var nodeEdgeProcessed = {}; // nodeId => { targetNodeId => true/undefined }
 
-  function allEdgesProcessed(source) {
-    var edges = graph.outEdges(source);
+  function allEdgesProcessed(target) {
+    var edges = graph.inEdges(target);
     for (var i = 0; i < edges.length; i++) {
-      var target = edges[i].w;
-      if (!nodeEdgeProcessed[source][target]) return false;
+      var source = edges[i].v;
+      if (!nodeEdgeProcessed[target][source]) return false;
     }
     return true;
   }
 
-  function updateLevelIfHigher(node, level) {
+  function updateLevelIfBetter(node, level) {
     if (nodeLevel[node] === undefined) nodeLevel[node] = 0;
     if (nodeLevel[node] < level) nodeLevel[node] = level;
   }
 
   function markEdgeAsProcessed(source, target) {
-    if (nodeEdgeProcessed[source] === undefined) nodeEdgeProcessed[source] = {};
-    nodeEdgeProcessed[source][target] = true;
+    if (nodeEdgeProcessed[target] === undefined) nodeEdgeProcessed[target] = {};
+    nodeEdgeProcessed[target][source] = true;
   }
 
   function addNodeToLayer(node, level) {
@@ -78,16 +78,16 @@ function findLayersInAcyclicGraph(graph) {
   }
 
   function propagateLevelThroughEdge(source, target, level) {
-    updateLevelIfHigher(source, level);
+    updateLevelIfBetter(target, level);
     markEdgeAsProcessed(source, target);
-    if (allEdgesProcessed(source)) {
-      addNodeToLayer(source, level);
-      queue.push(source);
+    if (allEdgesProcessed(target)) {
+      addNodeToLayer(target, level);
+      queue.push(target);
     }
   }
 
-  graph.sinks().map(function(node) {
-    updateLevelIfHigher(node, 0);
+  graph.sources().map(function(node) {
+    updateLevelIfBetter(node, 0);
     addNodeToLayer(node, 0);
     queue.push(node);
   });
@@ -95,7 +95,7 @@ function findLayersInAcyclicGraph(graph) {
   var nodeId;
   while ((nodeId = queue.shift()) !== undefined) {
     var level = nodeLevel[nodeId];
-    graph.inEdges(nodeId).map(function(edge) {
+    graph.outEdges(nodeId).map(function(edge) {
       propagateLevelThroughEdge(edge.v, edge.w, level + 1);
     });
   }

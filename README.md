@@ -4,7 +4,7 @@ Arrange a graph into layers.
 
 Can be used on a dependency graph, where an `a -> b` edge represents "a depends on b".
 
-The nodes on layer 0 don't have outbound edges. The nodes on layer _x_ only point to nodes to layer _x_ & _x-1_.
+The nodes on layer 0 don't have inbound edges. The nodes on layer _x_ only point to nodes to layer _x_ & _x+1_.
 
 It returns an array of layers, where a layer is an array of clusters, where a cluster is an array of strongly connected node IDs.
 
@@ -41,8 +41,8 @@ It returns an array of layers, where a layer is an array of clusters, where a cl
 
 Outputs:
 
-    [ [ 'v' ], [ 'g' ], [ 'h', 'j', 'i' ], [ 'u' ] ],
-      [ [ 'd', 'c' ], [ 'f' ] ],
-      [ [ 'e' ] ],
-      [ [ 'b' ] ],
-      [ [ 'a' ] ] ]
+    [ [ [ 'a' ] ],
+      [ [ 'b' ], [ 'd', 'c' ] ],
+      [ [ 'e' ], [ 'g' ], [ 'h', 'j', 'i' ] ],
+      [ [ 'f' ] ],
+      [ [ 'u' ], [ 'v' ] ] ],
