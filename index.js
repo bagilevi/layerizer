@@ -1,8 +1,8 @@
 var graphlib = require("graphlib");
 
 module.exports.layerize = function(graph) {
-  var clusters = graphlib.alg.tarjan(g);
-  var acyclic = convertToAcyclicGraphByReplacingStronglyConnectedClustersWithSingleNodes(g, clusters);
+  var clusters = graphlib.alg.tarjan(graph);
+  var acyclic = convertToAcyclicGraphByReplacingStronglyConnectedClustersWithSingleNodes(graph, clusters);
   var layers = findLayersInAcyclicGraph(acyclic.graph);
   return layers.map(function(layer){
     return layer.map(function(nodeOrCluster){
@@ -102,33 +102,3 @@ function findLayersInAcyclicGraph(graph) {
 
   return layers;
 }
-
-var edges = [
-  ['a', 'b'],
-  ['a', 'c'],
-  ['b', 'e'],
-  ['b', 'f'],
-  ['c', 'd'],
-  ['c', 'v'],
-  ['c', 'g'],
-  ['c', 'h'],
-  ['d', 'c'],
-  ['d', 'i'],
-  ['d', 'j'],
-  ['e', 'f'],
-  ['e', 'u'],
-  ['f', 'u'],
-  ['f', 'v'],
-  ['h', 'i'],
-  ['i', 'j'],
-  ['j', 'h']
-]
-
-var g = new graphlib.Graph();
-edges.map(function(edge) {
-  g.setEdge(edge[0], edge[1]);
-});
-
-var r = module.exports.layerize(g);
-console.log("Result:");
-console.log(r);
